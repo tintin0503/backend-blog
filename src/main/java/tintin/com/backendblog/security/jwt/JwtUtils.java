@@ -20,6 +20,11 @@ public class JwtUtils {
     @Value("${jwtExpirationMs}")
     private int jwtExpirationMs;
 
+    /**
+     * generate a JWT from username, date, expiration, secret
+     * @param authentication
+     * @return
+     */
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -31,10 +36,20 @@ public class JwtUtils {
                 .compact();
     }
 
+    /**
+     * get username from JWT
+     * @param token
+     * @return
+     */
     public String getUsernameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
+    /**
+     * validate JWT
+     * @param authToken
+     * @return
+     */
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
