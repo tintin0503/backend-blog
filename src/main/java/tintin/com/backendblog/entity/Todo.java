@@ -19,14 +19,14 @@ import java.sql.Date;
 @Table(name = "todos")
 public class Todo {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     // co nhieu todo doi voi 1 user
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "id", nullable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private User user;
 
     private String title;
 

@@ -1,6 +1,7 @@
 package tintin.com.backendblog.service;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tintin.com.backendblog.dto.TodoDto;
 import tintin.com.backendblog.entity.Todo;
@@ -11,14 +12,11 @@ import java.util.List;
 @Service
 public class TodoService {
 
-    private final TodoRepository todoRepository;
-    private final ModelMapper modelMapper;
+    @Autowired
+    private TodoRepository todoRepository;
+    @Autowired
+    private ModelMapper modelMapper;
 
-
-    public TodoService(TodoRepository todoRepository, ModelMapper modelMapper) {
-        this.todoRepository = todoRepository;
-        this.modelMapper = modelMapper;
-    }
 
     public boolean save(TodoDto todo) {
         Todo todoEntity = Todo.builder()

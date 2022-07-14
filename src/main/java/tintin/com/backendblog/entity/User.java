@@ -63,6 +63,6 @@ public class User {
 
     // Quan hệ 1-n với đối tượng (Todo) (1 User có nhiều todo)
     // MapopedBy trỏ tới tên biến User ở trong Todo.
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Collection<Todo> todos;
+//    @OneToMany(mappedBy = "user", fetch=FetchType.EAGER)
+//    private Collection<Todo> todos;
 }
