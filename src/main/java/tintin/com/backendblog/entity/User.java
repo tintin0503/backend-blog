@@ -1,9 +1,7 @@
 package tintin.com.backendblog.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -61,8 +59,9 @@ public class User {
     @Column(name = "bank_account_number")
     private String bankAccountNumber;
 
-    // Quan hệ 1-n với đối tượng (Todo) (1 User có nhiều todo)
-    // MapopedBy trỏ tới tên biến User ở trong Todo.
-//    @OneToMany(mappedBy = "user", fetch=FetchType.EAGER)
-//    private Collection<Todo> todos;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @Nullable
+    private Collection<Houseware> housewares;
 }

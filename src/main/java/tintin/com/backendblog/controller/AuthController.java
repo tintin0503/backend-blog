@@ -1,5 +1,6 @@
 package tintin.com.backendblog.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import tintin.com.backendblog.constant.enums.ERole;
 import tintin.com.backendblog.dto.request.LoginRequest;
 import tintin.com.backendblog.dto.request.SignupRequest;
 import tintin.com.backendblog.dto.response.JwtResponse;
@@ -22,23 +24,24 @@ import tintin.com.backendblog.security.services.UserDetailsImpl;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoleRepository roleRepository;
-    @Autowired
     PasswordEncoder encoder;
     @Autowired
     JwtUtils jwtUtils;
+
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticationUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -86,25 +89,32 @@ public class AuthController {
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
-//        if (strRoles == null) {
-//            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-//                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-//            roles.add(userRole);
+        if (strRoles == null) {
+            Optional<Role> userRole = roleRepository.findByName(ERole.ROLE_USER);
+            if (!userRole.isPresent()) {
+                Role role = new Role();
+                role.setName(ERole.ROLE_USER);
+                roleRepository.save(role);
+                roles.add(role);
+            } else {
+                roles.add(userRole.get());
+            }
+
 //        } else {
 //            strRoles.forEach(role -> {
 //                switch (role) {
 //                    case "admin":
-//                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+//                        Optional<Role> adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
 //                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 //                        roles.add(adminRole);
 //                        break;
 //                    default:
-//                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+//                        Optional<Role> userRole = roleRepository.findByName(ERole.ROLE_USER)
 //                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 //                        roles.add(userRole);
 //                }
 //            });
-//        }
+        }
         user.setRoles(roles);
         userRepository.save(user);
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));

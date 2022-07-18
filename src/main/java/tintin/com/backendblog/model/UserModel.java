@@ -20,5 +20,4 @@ public class UserModel {
     private String companyAddress;
     private String bankName;
     private String bankAccountNumber;
-    private String school; // for TinTin
 }
