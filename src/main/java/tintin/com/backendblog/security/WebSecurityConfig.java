@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().mvcMatchers(HttpMethod.OPTIONS, "/**");
         // ignore swagger
-        web.ignoring().mvcMatchers("/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs");
+        web.ignoring().antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
     }
 
     @Override
@@ -65,7 +65,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/auth/login", "/api/auth/register", "/swagger-ui.html/**").permitAll()
+                .authorizeRequests()
+                .antMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                .antMatchers("/swagger/**").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/api/test/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
